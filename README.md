@@ -15,3 +15,5 @@
 刷奇遇功能： 【暴走英雄坛躺床辅助器测试版v0.2】 https://www.bilibili.com/video/BV1KzRBYAESy/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
 使用方式：解压后->bzyxt->dist->gui_main.exe
+
+注意事项：由于刷奇遇功能并没有十分完善，推荐最大次数设为0，修改奇遇后要先退出重进再启动。
