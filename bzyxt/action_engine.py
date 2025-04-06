@@ -88,7 +88,7 @@ def click_image(image_path, confidence=0.9, folder_path="../screen_temp"):
 
 
 # --- 智能封装：点击前自动截图 ---
-def smart_click_image(image_path, confidence, folder_path="../screen_temp"):
+def smart_click_image(image_path, confidence=0.7, folder_path="../screen_temp"):
     if stop_event.is_set():
         return False
 

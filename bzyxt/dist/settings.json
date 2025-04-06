@@ -1,6 +1,15 @@
 {
-    "speed": 341281.0,
-    "art_name": "玉女剑法",
-    "target_level": "",
-    "discount": 42.0
+    "sleep_data": {
+        "speed": 341281.0,
+        "art_name": "飞蝶舞步",
+        "target_level": "",
+        "discount": 42.0
+    },
+    "adventure_data": {
+        "adventure_name": "家",
+        "count_max_data": 0.0
+    },
+    "task_data": {
+        "task": "刷奇遇"
+    }
 }
