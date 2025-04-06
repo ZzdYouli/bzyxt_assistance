@@ -7,5 +7,9 @@
 开启开发者模式：设置->关于平板电脑->连续点击版本号（不确定是否必需）
 模拟器设置：软件测试->其他->ADB调试->开启本地连接
 
-使用演示：躺床功能：   【暴走英雄坛躺床辅助器测试版v0.1】 https://www.bilibili.com/video/BV1LXZXYhEtX/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
-         刷奇遇功能： 【暴走英雄坛躺床辅助器测试版v0.2】 https://www.bilibili.com/video/BV1KzRBYAESy/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
+使用演示：
+
+躺床功能：   【暴走英雄坛躺床辅助器测试版v0.1】 https://www.bilibili.com/video/BV1LXZXYhEtX/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
+
+
+刷奇遇功能： 【暴走英雄坛躺床辅助器测试版v0.2】 https://www.bilibili.com/video/BV1KzRBYAESy/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
