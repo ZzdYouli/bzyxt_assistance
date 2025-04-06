@@ -14,7 +14,6 @@ from threading import Thread
 from arts_switch import arts_switch
 import time
 import logging
-import datetime
 
 
 def interruptible_sleep(seconds, stop_event, interval=0.2):
@@ -34,7 +33,7 @@ def cleanup_task(folder_path, stop_event):
 def process_screenshot(folder_path, speed, art_name, target_level, discount, stop_event, update_ui):
     while not stop_event.is_set():
         try:
-            now = datetime.datetime.now().strftime("%H:%M:%S")
+
             latest_screenshot = capture_screenshot(folder_path)
             current, total, level = extract_progress_data(latest_screenshot)
             countdown = extract_countdown_timer(latest_screenshot)
@@ -57,7 +56,7 @@ def process_screenshot(folder_path, speed, art_name, target_level, discount, sto
                     adb_click(40, 40)
                     interruptible_sleep(0.8, stop_event)
                     bed_to_post()
-                    nyn()
+                    nyn(art_name)
                     to_bed()
                     if smart_click_and_scroll_loop(art_name) is not True:
                         pair(art_name)
