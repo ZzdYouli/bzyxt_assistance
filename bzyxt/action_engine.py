@@ -122,16 +122,56 @@ def smart_scroll(folder_path="../screen_temp"):
         logging.info(f"❌ 错误：{str(e)}")
 
 
+def smart_scroll_learn(folder_path="../screen_temp"):
+    if stop_event.is_set():
+        return False
+
+    capture_screenshot(folder_path)  # 每次滚动前都截图
+
+    # 滑动起点和终点
+    start_x, start_y = 350, 1200  # 滑动起点
+    end_x, end_y = 350, 900  # 滑动终点
+    duration = 1000  # 滑动时间（毫秒）
+
+    try:
+        result = subprocess.run(
+            ["adb", "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y), str(duration)],
+            text=True,
+            capture_output=True
+        )
+
+        if result.returncode != 0:
+            logging.info(f"❌ ADB 命令执行失败，错误信息：{result.stderr}")
+
+    except Exception as e:
+        logging.info(f"❌ 错误：{str(e)}")
+
+
 def smart_click_and_scroll_loop(art_name, max_iterations=5,
                                 folder_path="../screen_temp"):
     for i in range(max_iterations):
         if stop_event.is_set():
             return False
 
-        if smart_click_image(f"../assets/Martial arts/{art_name}1.png", confidence=0.8):
+        if smart_click_image(f"../assets/Martial arts/{art_name}.png", confidence=0.7):
             if detect_image("../assets/main_if/find_pair.png"):
                 return False
             return True
         smart_scroll(folder_path)
+        time.sleep(1.5)
+    return False
+
+
+def smart_click_and_scroll_loop_learn(art_name, max_iterations=5,
+                                      folder_path="../screen_temp"):
+    for i in range(max_iterations):
+        if stop_event.is_set():
+            return False
+
+        if smart_click_image(f"../assets/Martial arts/{art_name}1.png", confidence=0.7):
+            if detect_image("../assets/main_if/find_pair.png"):
+                return False
+            return True
+        smart_scroll_learn(folder_path)
         time.sleep(1.5)
     return False

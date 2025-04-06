@@ -1,5 +1,5 @@
 import time
-from action_engine import adb_click, smart_click_image
+from action_engine import adb_click, smart_click_image, detect_image
 from adventure_switch import adventure_switch
 import logging
 from basic_features.to_post import to_post
@@ -13,45 +13,32 @@ is_running = False  # 用于标识冒险是否正在运行
 
 def adventure(adventure_name, count_max):
     global count
-    if count == count_max:
-        print(f"共刷新{count_max}，未遇到{adventure_name}奇遇")
-        return False
-    reset()
-    smart_click_image("../assets/button/task.png")
-    time.sleep(0.2)
-    adb_click(445, 1010)
-    time.sleep(0.5)
-    to_post()
-    smart_click_image("../assets/post/tjs.png")
-    time.sleep(0.5)
-    adb_click(445, 1010)
-    time.sleep(0.5)
-    adb_click(0, 720)
-    time.sleep(1.5)
-    count = count + 1
-    if smart_click_image(f"../assets/adventure/{adventure_switch(adventure_name)}.png"):
-        logging.info(f"已遇到{adventure_name}奇遇")
-        logging.info(f"共遇到{count - 1}次奇遇")
-        return True
-    reset()
-    smart_click_image("../assets/button/task.png")
-    time.sleep(0.2)
-    adb_click(445, 1010)
-    time.sleep(0.2)
-    to_post()
-    smart_click_image("../assets/post/tjs.png")
-    time.sleep(0.2)
-    adb_click(445, 1010)
-    time.sleep(0.5)
-    adb_click(0, 720)
-    time.sleep(1.5)
-    count = count + 1
-    if smart_click_image(f"../assets/adventure/{adventure_switch(adventure_name)}.png"):
-        logging.info(f"已遇到{adventure_name}奇遇")
-        logging.info(f"共遇到{count - 1}次奇遇")
-        return True
-    else:
-        adventure(adventure_name,count_max)
+    from stop_event import stop_event
+
+    while not stop_event.is_set():
+        if count_max > 0 and count >= count_max:
+            logging.info(f"共刷新{count_max}次，未遇到{adventure_name}奇遇")
+            break
+
+        reset()
+        smart_click_image("../assets/button/task.png")
+        time.sleep(0.2)
+        adb_click(445, 1010)
+        time.sleep(0.5)
+        to_post()
+        smart_click_image("../assets/post/tjs.png")
+        time.sleep(0.5)
+        adb_click(445, 1010)
+        time.sleep(0.5)
+        adb_click(0, 720)
+        time.sleep(1.5)
+
+        if detect_image(f"../assets/adventure/{adventure_switch(adventure_name)}.png"):
+            logging.info(f"已遇到{adventure_name}奇遇")
+            logging.info(f"共遇到{count}次刷新")
+            break
+
+        count += 1
 
 
 # 用于启动线程的函数
@@ -79,7 +66,3 @@ def start_adventure(adventure_name, folder_path, count_max):
     adventure_thread = Thread(target=adventure, args=(adventure_name, count_max))  # 传递 count_max
     adventure_thread.daemon = True
     adventure_thread.start()
-
-    # 等待任务停止
-    while not stop_event.is_set():
-        time.sleep(0.2)

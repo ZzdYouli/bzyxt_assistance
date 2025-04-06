@@ -1,4 +1,3 @@
-import sys
 import tkinter as tk
 from tkinter import ttk
 import tkinter.messagebox as msgbox
@@ -32,6 +31,7 @@ task = tk.StringVar(value="躺床")
 is_running = False  # 标记程序是否在运行
 start_button = None  # 用于后面引用“启动/停止”按钮
 task_thread = None  # 后台线程引用
+adventure_thread = None
 info_label = None
 running_label = None
 

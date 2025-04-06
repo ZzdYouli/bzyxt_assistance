@@ -3,7 +3,7 @@ import random
 from basic_features.bed_to_post import bed_to_post
 from basic_features.reset import reset
 from basic_features.to_bed import to_bed
-from action_engine import adb_click, smart_click_and_scroll_loop
+from action_engine import adb_click, smart_click_and_scroll_loop, smart_click_and_scroll_loop_learn
 from arts_to_practice.yng.nyn import nyn
 
 from image_handler import extract_progress_data, extract_countdown_timer
