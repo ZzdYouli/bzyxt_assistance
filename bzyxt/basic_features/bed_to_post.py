@@ -3,6 +3,7 @@ import time
 
 
 def bed_to_post():
+
     if detect_image("../assets/button/running.png") is False:
         adb_click(630, 960)
         time.sleep(0.2)

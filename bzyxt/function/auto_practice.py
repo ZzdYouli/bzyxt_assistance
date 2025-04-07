@@ -56,7 +56,8 @@ def process_screenshot(folder_path, speed, art_name, target_level, discount, sto
                     adb_click(40, 40)
                     interruptible_sleep(0.8, stop_event)
                     bed_to_post()
-                    nyn(art_name)
+                    from arts_to_practice.yng.lqz import lqz
+                    lqz(art_name)
                     to_bed()
                     if smart_click_and_scroll_loop(art_name) is not True:
                         pair(art_name)
