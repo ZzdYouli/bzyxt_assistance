@@ -30,7 +30,7 @@ def adb_click(x, y):
     return True
 
 
-def detect_image(image_path, confidence=0.5, folder_path="../screen_temp"):
+def detect_image(image_path, confidence=0.8, folder_path="../screen_temp"):
     """识别图像是否出现在当前截图中"""
     if stop_event.is_set():
         return False
@@ -52,7 +52,7 @@ def detect_image(image_path, confidence=0.5, folder_path="../screen_temp"):
     return loc[0].size > 0
 
 
-def click_image(image_path, confidence=0.9, folder_path="../screen_temp"):
+def click_image(image_path, confidence=0.8, folder_path="../screen_temp"):
     """点击图像，点击前先进行截图"""
     if stop_event.is_set():
         return False
@@ -88,7 +88,7 @@ def click_image(image_path, confidence=0.9, folder_path="../screen_temp"):
 
 
 # --- 智能封装：点击前自动截图 ---
-def smart_click_image(image_path, confidence=0.7, folder_path="../screen_temp"):
+def smart_click_image(image_path, confidence=0.9, folder_path="../screen_temp"):
     if stop_event.is_set():
         return False
 
@@ -168,7 +168,7 @@ def smart_click_and_scroll_loop_learn(art_name, max_iterations=5,
         if stop_event.is_set():
             return False
 
-        if smart_click_image(f"../assets/Martial arts/{art_name}1.png", confidence=0.7):
+        if smart_click_image(f"../assets/Martial arts/{art_name}1.png", confidence=0.9):
             if detect_image("../assets/main_if/find_pair.png"):
                 return False
             return True

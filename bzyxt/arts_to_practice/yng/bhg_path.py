@@ -15,7 +15,7 @@ def bhg_path():
     adb_click(360, 10)
     time.sleep(2)
 
-    adb_click(210, 680)
+    adb_click(360, 500)
     time.sleep(2)
 
     adb_click(600, 1200)
