@@ -16,8 +16,8 @@ def adventure(adventure_name, count_max):
     from stop_event import stop_event
 
     while not stop_event.is_set():
-        if count_max > 0 and count >= count_max:
-            logging.info(f"共刷新{count_max}次，未遇到{adventure_name}奇遇")
+        if 0 < count_max <= count:
+            print(f"共刷新{count_max}次，未遇到{adventure_name}奇遇")
             break
 
         reset()
@@ -32,10 +32,10 @@ def adventure(adventure_name, count_max):
         time.sleep(0.5)
         adb_click(0, 720)
         time.sleep(1.5)
-
-        if detect_image(f"../assets/adventure/{adventure_switch(adventure_name)}.png"):
-            logging.info(f"已遇到{adventure_name}奇遇")
-            logging.info(f"共遇到{count}次刷新")
+        print(f"已刷新{count}次奇遇")
+        if detect_image(f"../assets/adventure/{adventure_switch(adventure_name)}.png", confidence=0.7):
+            print(f"已遇到{adventure_name}奇遇")
+            print(f"共遇到{count}次奇遇")
             break
 
         count += 1

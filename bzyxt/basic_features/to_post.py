@@ -1,4 +1,4 @@
-from action_engine import adb_click, detect_image,smart_click_image
+from action_engine import adb_click, detect_image, smart_click_image
 import time
 
 
