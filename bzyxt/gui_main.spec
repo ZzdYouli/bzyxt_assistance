@@ -4,7 +4,7 @@
 a = Analysis(
     ['gui_main.py'],
     pathex=[],
-    binaries=[],
+    binaries=[('tools/adb.exe', 'tools'), ('tools/AdbWinApi.dll', 'tools'), ('tools/AdbWinUsbApi.dll', 'tools')],
     datas=[],
     hiddenimports=[],
     hookspath=[],
