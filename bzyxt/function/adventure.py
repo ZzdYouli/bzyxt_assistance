@@ -11,7 +11,7 @@ adventure_thread = None  # 用于保存线程对象
 is_running = False  # 用于标识冒险是否正在运行
 
 
-def adventure(adventure_name, count_max):
+def adventure(adventure_name, count_max, performance):
     global count
     from stop_event import stop_event
 
@@ -19,19 +19,20 @@ def adventure(adventure_name, count_max):
         if 0 < count_max <= count:
             print(f"共刷新{count_max}次，未遇到{adventure_name}奇遇")
             break
-
-        reset()
+        a = 1.5 if performance == '低性能模式' else 1
+        print(a)
+        reset(performance)
         smart_click_image("../assets/button/task.png")
-        time.sleep(0.2)
+        time.sleep(0.2 * a)
         adb_click(445, 1010)
-        time.sleep(0.5)
-        to_post()
+        time.sleep(0.5 * a)
+        to_post(performance)
         smart_click_image("../assets/post/tjs.png")
-        time.sleep(0.5)
+        time.sleep(0.5 * a)
         adb_click(445, 1010)
-        time.sleep(0.5)
+        time.sleep(0.5 * a)
         adb_click(0, 720)
-        time.sleep(1.5)
+        time.sleep(1.5 * a)
         print(f"已刷新{count}次奇遇")
         if detect_image(f"../assets/adventure/{adventure_switch(adventure_name)}.png", confidence=0.7):
             print(f"已遇到{adventure_name}奇遇")
@@ -42,7 +43,7 @@ def adventure(adventure_name, count_max):
 
 
 # 用于启动线程的函数
-def start_adventure(adventure_name, folder_path, count_max):
+def start_adventure(adventure_name, folder_path, count_max, performance):
     global is_running, adventure_thread
     from function.auto_practice import cleanup_task
     from stop_event import stop_event
@@ -63,6 +64,6 @@ def start_adventure(adventure_name, folder_path, count_max):
     cleanup_thread.start()
 
     # 启动新的冒险任务线程
-    adventure_thread = Thread(target=adventure, args=(adventure_name, count_max))  # 传递 count_max
+    adventure_thread = Thread(target=adventure, args=(adventure_name, count_max, performance))  # 传递 count_max
     adventure_thread.daemon = True
     adventure_thread.start()

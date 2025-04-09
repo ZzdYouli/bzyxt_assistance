@@ -153,7 +153,7 @@ def smart_click_and_scroll_loop(art_name, max_iterations=5,
         if stop_event.is_set():
             return False
 
-        if smart_click_image(f"../assets/Martial arts/{art_name}.png", confidence=0.7):
+        if smart_click_image(f"../assets/Martial arts/{art_name}.png", confidence=0.9):
             if detect_image("../assets/main_if/find_pair.png"):
                 return False
             return True

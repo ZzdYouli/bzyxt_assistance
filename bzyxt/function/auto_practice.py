@@ -4,8 +4,11 @@ from basic_features.bed_to_post import bed_to_post
 from basic_features.reset import reset
 from basic_features.to_bed import to_bed
 from action_engine import adb_click, smart_click_and_scroll_loop, smart_click_and_scroll_loop_learn
-from arts_to_practice.yng.nyn import nyn
-
+from arts_to_practice.bhg.lqz import lqz
+from arts_to_practice.mj.hfh import hfh
+from arts_to_practice.cxg.xd import xd
+from arts_to_practice.xyd.tqgs import tqgs
+from path_pick import path_pick
 from image_handler import extract_progress_data, extract_countdown_timer
 from basic_features.pair import pair
 from cleanup import cleanup_screenshots
@@ -30,7 +33,7 @@ def cleanup_task(folder_path, stop_event):
     cleanup_screenshots(folder_path, stop_event)
 
 
-def process_screenshot(folder_path, speed, art_name, target_level, discount, stop_event, update_ui):
+def process_screenshot(folder_path, speed, art_name, target_level, discount, stop_event, performance, update_ui):
     while not stop_event.is_set():
         try:
 
@@ -46,21 +49,40 @@ def process_screenshot(folder_path, speed, art_name, target_level, discount, sto
                 interval = ((float(factor * total - current)) / speed)
 
                 # 调用回调函数更新 UI
+                # 调用回调函数更新 UI
                 if ratio >= factor:
+                    update_ui(mode="running")
 
-                    update_ui(
-                        mode="running"
-                    )
                     adb_click(40, 40)
                     interruptible_sleep(0.8, stop_event)
                     adb_click(40, 40)
                     interruptible_sleep(0.8, stop_event)
-                    bed_to_post()
-                    from arts_to_practice.yng.lqz import lqz
-                    lqz(art_name)
-                    to_bed()
-                    if smart_click_and_scroll_loop(art_name) is not True:
-                        pair(art_name)
+                    bed_to_post(performance)
+
+                    # === 正确转换绑定变量为字符串 ===
+                    art = art_name.get() if hasattr(art_name, "get") else art_name
+                    perf = performance.get() if hasattr(performance, "get") else performance
+                    path = path_pick(art)
+
+                    print(f"当前功法: {art}, 选择路径: {path}")  # 可选：用于调试
+
+                    # === 路径判断并调用对应函数 ===
+                    if path == "xd":
+                        xd(art, perf)
+                    elif path == "lqz":
+                        lqz(art, perf)
+                    elif path == "tqgs":
+                        tqgs(art, perf)
+                    elif path == "hfh":
+                        hfh(art, perf)
+                    else:
+                        print(f"[警告] 未知功法路径: {art} => {path}")
+
+                    to_bed(perf)
+
+                    if smart_click_and_scroll_loop(art) is not True:
+                        pair(art, perf)
+
                 else:
 
                     # 调用回调函数更新 UI
@@ -81,19 +103,19 @@ def process_screenshot(folder_path, speed, art_name, target_level, discount, sto
                 )
 
             else:
-                reset()
-                to_bed()
+                reset(performance)
+                to_bed(performance)
                 if smart_click_and_scroll_loop(art_name) is not True:
-                    pair(art_name)
+                    pair(art_name, performance)
 
         except Exception as e:
             logging.error(f"处理截图时发生错误: {e}")
             interruptible_sleep(60, stop_event)
 
-        interruptible_sleep(random.uniform(5, 10), stop_event)
+        interruptible_sleep(random.uniform(3, 5), stop_event)
 
 
-def start_practice(folder_path, speed, art_name, target_level, discount, stop_event, update_ui):
+def start_practice(folder_path, speed, art_name, target_level, discount, performance, stop_event, update_ui):
     # 启动清理线程
     cleanup_thread = Thread(target=cleanup_task, args=(folder_path, stop_event))
     cleanup_thread.daemon = True
@@ -101,7 +123,9 @@ def start_practice(folder_path, speed, art_name, target_level, discount, stop_ev
 
     # 启动截图处理线程，并传入回调函数
     process_thread = Thread(target=process_screenshot,
-                            args=(folder_path, speed, art_name, target_level, discount, stop_event, update_ui))
+                            args=(
+                                folder_path, speed, art_name, target_level, discount, stop_event, performance,
+                                update_ui))
     process_thread.daemon = True
     process_thread.start()
 
