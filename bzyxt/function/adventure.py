@@ -20,7 +20,6 @@ def adventure(adventure_name, count_max, performance):
             print(f"共刷新{count_max}次，未遇到{adventure_name}奇遇")
             break
         a = 1.5 if performance == '低性能模式' else 1
-        print(a)
         reset(performance)
         smart_click_image("../assets/button/task.png")
         time.sleep(0.2 * a)
