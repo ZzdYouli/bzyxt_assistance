@@ -27,6 +27,7 @@ discount = tk.DoubleVar()
 adventure_name = tk.StringVar(value="赌场")
 count_max = tk.DoubleVar(value=0)
 task = tk.StringVar(value="躺床")
+performance = tk.StringVar(value="高性能模式")
 # === 控制按钮状态 ===
 is_running = False  # 标记程序是否在运行
 start_button = None  # 用于后面引用“启动/停止”按钮
@@ -39,7 +40,7 @@ running_label = None
 def show_tooltip(event, text):
     """显示气泡提示"""
     tooltip = tk.Label(root, text=text, font=("微软雅黑", 10), bg="lightyellow", relief="solid", bd=1)
-    tooltip.place(x=300, y=100)  # 在鼠标下方显示气泡
+    tooltip.place(x=200, y=200)  # 在鼠标下方显示气泡
 
 
 def hide_tooltip(event):
@@ -105,6 +106,9 @@ def load_data():
             task_data = data.get('task_data', {})
             task.set(task_data.get('task', '躺床'))
 
+            performance_data = data.get('performance_data', {})
+            performance.set(performance_data.get('performance', '高性能模式'))
+
 
 # === 保存数据到本地 ===
 def save_data():
@@ -126,12 +130,16 @@ def save_data():
         'task': task.get()
 
     }
+    performance_data = {
+        'performance': performance.get()
+    }
 
     # 保存数据到 JSON 文件
     data = {
         'sleep_data': sleep_data,
         'adventure_data': adventure_data,
-        'task_data': task_data
+        'task_data': task_data,
+        'performance_data': performance_data
     }
 
     with open(data_file, 'w', encoding='utf-8') as f:
@@ -150,12 +158,15 @@ def start_button_click(task):
         art_name_value = art_name.get()
         target_level_value = target_level.get()
         discount_value = discount.get()
+        performance_value = performance.get()
 
         if task_switch(task) == "practice":
             # 启动修炼任务的线程
             task_thread = threading.Thread(
                 target=start_practice,
-                args=(folder_path, speed_value, art_name_value, target_level_value, discount_value, stop_event, update_ui)
+                args=(
+                    folder_path, speed_value, art_name_value, target_level_value, discount_value, performance_value,
+                    stop_event, update_ui)
             )
             task_thread.daemon = True  # 设置为守护线程
             task_thread.start()
@@ -165,7 +176,7 @@ def start_button_click(task):
             # 启动冒险任务的线程
             adventure_thread = threading.Thread(
                 target=start_adventure,
-                args=(adventure_name.get(), folder_path, count_max.get())  # Pass count_max value
+                args=(adventure_name.get(), folder_path, count_max.get(), performance.get())  # Pass count_max value
             )
             adventure_thread.daemon = True  # 设置为守护线程
             adventure_thread.start()
@@ -260,10 +271,19 @@ def show_overview():
     top_frame = tk.Frame(mid_frame)
     top_frame.pack(fill="both", expand=True, padx=10, pady=(10, 5))
 
-    method_combobox = ttk.Combobox(top_frame, values=["躺床", "刷奇遇"], textvariable=task)
-    method_combobox.grid(row=0, column=1, sticky="w", padx=5)
+    task_combobox = ttk.Combobox(top_frame, values=["躺床", "刷奇遇"], textvariable=task)
+    task_combobox.grid(row=0, column=1, sticky="w", padx=5)
 
+    separator = tk.Frame(mid_frame, bg="gray", height=2)
+    separator.pack(fill="x", padx=5, pady=20)
+
+    method_combobox = ttk.Combobox(mid_frame, values=["高性能模式", "低性能模式"], textvariable=performance)
+    method_combobox.pack(fill="x", expand=True, padx=10, pady=(10, 5))
+    tip_text = "这里的性能指的是你的网速\n高性能模式点击速度更快，\n低性能模式等待时间为高性能模式的1.5倍。"
+    method_combobox.bind("<Enter>", lambda event: show_tooltip(event, tip_text))  # 鼠标进入时显示气泡提示
+    method_combobox.bind("<Leave>", hide_tooltip)  # 鼠标离开时隐藏气泡提示
     # 绑定 Combobox 事件，选择后保存
+    task_combobox.bind("<<ComboboxSelected>>", lambda event: save_data())
     method_combobox.bind("<<ComboboxSelected>>", lambda event: save_data())
 
     # 右侧显示区域
@@ -292,7 +312,10 @@ def show_sleep_page():
     top_frame.pack(fill="both", expand=True, padx=10, pady=(10, 5))
 
     tk.Label(top_frame, text="需要修炼的功法", font=("微软雅黑", 12)).grid(row=0, column=0, sticky="w")
-    method_combobox = ttk.Combobox(top_frame, values=["玉女剑法", "飞蝶舞步", "素心掌"], textvariable=art_name)
+    method_combobox = ttk.Combobox(top_frame,
+                                   values=["玉女剑法", "飞蝶舞步", "伊贺体术", "影遁之术", "万毒手", "五毒幻形",
+                                           "血杀掌", "血影步"],
+                                   textvariable=art_name)
     method_combobox.grid(row=0, column=1, sticky="w", padx=5)
 
     tk.Label(top_frame, text="目标等级：", font=("微软雅黑", 11)).grid(row=1, column=0, sticky="w", pady=10)

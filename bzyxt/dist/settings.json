@@ -1,9 +1,9 @@
 {
     "sleep_data": {
-        "speed": 341032.0,
-        "art_name": "玉女剑法",
+        "speed": 414865.0,
+        "art_name": "血杀掌",
         "target_level": "",
-        "discount": 42.0
+        "discount": 30.0
     },
     "adventure_data": {
         "adventure_name": "赌场",
@@ -11,5 +11,8 @@
     },
     "task_data": {
         "task": "躺床"
+    },
+    "performance_data": {
+        "performance": "低性能模式"
     }
 }
