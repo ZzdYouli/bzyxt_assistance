@@ -1,7 +1,7 @@
 {
     "sleep_data": {
         "speed": 414865.0,
-        "art_name": "血杀掌",
+        "art_name": "玉女剑法",
         "target_level": "",
         "discount": 30.0
     },
@@ -10,7 +10,7 @@
         "count_max_data": 0.0
     },
     "task_data": {
-        "task": "躺床"
+        "task": "刷奇遇"
     },
     "performance_data": {
         "performance": "低性能模式"
