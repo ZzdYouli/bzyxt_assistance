@@ -2,7 +2,7 @@ import subprocess
 import os
 import sys
 from datetime import datetime
-from adb_utils import get_adb_path
+from utils_path import get_adb_path
 
 
 def capture_screenshot(folder_path="../screen_temp"):
