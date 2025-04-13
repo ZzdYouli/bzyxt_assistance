@@ -2,9 +2,10 @@ import pytesseract
 from PIL import Image
 import re
 from action_engine import detect_image
+from utils_path import get_tesseract_path
 
 # 配置 Tesseract 路径（如果已经添加到系统 PATH，则这行也可以删）
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+pytesseract.pytesseract.tesseract_cmd = get_tesseract_path()
 
 
 # 解析进度条中的数据
