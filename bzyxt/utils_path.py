@@ -18,4 +18,4 @@ def get_tesseract_path():
         base_path = sys._MEIPASS
     except Exception:
         base_path = os.path.abspath(".")
-    return os.path.join(base_path, "tesseract-OCR", "tesseract.exe")
+    return os.path.join(base_path, "tools", "tesseract-OCR", "tesseract.exe")

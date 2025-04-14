@@ -5,10 +5,11 @@ from arts_to_practice.cxg.cxg_path import cxg_path
 
 
 def xd(art_name, performance):
+
     smart_click_image("../assets/post/cxg.png", confidence=0.8)
     time.sleep(1.5)
 
-    cxg_path()
+    cxg_path(performance)
     smart_click_and_scroll_loop_learn(art_name)
     time.sleep(1)
 
