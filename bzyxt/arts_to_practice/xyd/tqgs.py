@@ -5,10 +5,11 @@ from arts_to_practice.xyd.xyd_path import xyd_path
 
 
 def tqgs(art_name, performance):
+    a = 1.5 if performance == '低性能模式' else 1
     smart_click_image("../assets/post/xyd.png", confidence=0.8)
     time.sleep(1.5)
 
-    xyd_path()
+    xyd_path(performance)
     smart_click_and_scroll_loop_learn(art_name)
     time.sleep(1)
 

@@ -8,7 +8,7 @@ def lqz(art_name, performance):
     smart_click_image("../assets/post/bhg.png", confidence=0.8)
     time.sleep(1.5)
 
-    bhg_path()
+    bhg_path(performance)
     smart_click_and_scroll_loop_learn(art_name)
     time.sleep(1)
 
