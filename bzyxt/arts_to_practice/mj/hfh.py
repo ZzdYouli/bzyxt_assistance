@@ -5,10 +5,11 @@ from arts_to_practice.mj.mj_path import mj_path
 
 
 def hfh(art_name, performance):
+
     smart_click_image("../assets/post/mj.png", confidence=0.8)
     time.sleep(1.5)
 
-    mj_path()
+    mj_path(performance)
     smart_click_and_scroll_loop_learn(art_name)
     time.sleep(1)
 
