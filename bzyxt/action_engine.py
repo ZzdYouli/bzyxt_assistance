@@ -7,9 +7,10 @@ import os
 from screenShot import capture_screenshot  # 假设你已经实现了capture_screenshot函数
 import numpy as np
 from stop_event import stop_event  # 引入 stop_event 用于检查停止信号
-from utils_path import get_adb_path,get_tesseract_path
+from utils_path import get_adb_path
+
 # 可选：修改为你的 Tesseract 安装路径
-pytesseract.pytesseract.tesseract_cmd = get_tesseract_path()
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
 def adb_click(x, y):
@@ -110,7 +111,8 @@ def smart_scroll(folder_path="../screen_temp"):
 
     try:
         result = subprocess.run(
-            [get_adb_path(), "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y), str(duration)],
+            [get_adb_path(), "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y),
+             str(duration)],
             text=True,
             capture_output=True
         )
@@ -135,7 +137,8 @@ def smart_scroll_learn(folder_path="../screen_temp"):
 
     try:
         result = subprocess.run(
-            [get_adb_path(), "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y), str(duration)],
+            [get_adb_path(), "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y),
+             str(duration)],
             text=True,
             capture_output=True
         )
