@@ -112,7 +112,7 @@ def process_screenshot(folder_path, speed, art_name, target_level, discount, sto
             logging.error(f"处理截图时发生错误: {e}")
             interruptible_sleep(60, stop_event)
 
-        interruptible_sleep(random.uniform(5, 8), stop_event)
+        interruptible_sleep(random.uniform(3, 5), stop_event)
 
 
 def start_practice(folder_path, speed, art_name, target_level, discount, performance, stop_event, update_ui):
