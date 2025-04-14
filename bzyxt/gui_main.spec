@@ -5,7 +5,7 @@ a = Analysis(
     ['gui_main.py'],
     pathex=[],
     binaries=[('tools/adb.exe', 'tools'), ('tools/AdbWinApi.dll', 'tools'), ('tools/AdbWinUsbApi.dll', 'tools')],
-    datas=[('tools/Tesseract-OCR', 'tesseract-OCR')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
