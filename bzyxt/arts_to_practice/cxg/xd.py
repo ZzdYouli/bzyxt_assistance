@@ -2,21 +2,22 @@ from action_engine import adb_click, smart_click_image, smart_click_and_scroll_l
 import time
 from basic_features.reset import reset
 from arts_to_practice.cxg.cxg_path import cxg_path
+from sleep_utils import interruptible_sleep
 
+def xd(art_name, performance, stop_event):
 
-def xd(art_name, performance):
+    smart_click_image("../assets/post/cxg.png", confidence=0.8, stop_event=stop_event)
 
-    smart_click_image("../assets/post/cxg.png", confidence=0.8)
-    time.sleep(1.5)
+    interruptible_sleep(1.5, stop_event)
 
-    cxg_path(performance)
-    smart_click_and_scroll_loop_learn(art_name)
-    time.sleep(1)
+    cxg_path(performance, stop_event)
+    smart_click_and_scroll_loop_learn(art_name, stop_event)
+    interruptible_sleep(1, stop_event)
 
-    smart_click_image("../assets/button/learn.png", confidence=0.5)
-    time.sleep(3.5)
+    smart_click_image("../assets/button/learn.png", confidence=0.5, stop_event=stop_event)
+    interruptible_sleep(3.5, stop_event)
 
-    adb_click(250, 820)
-    time.sleep(1)
+    adb_click(250, 820, stop_event)
+    interruptible_sleep(1, stop_event)
 
-    reset(performance)
+    reset(performance, stop_event)
