@@ -4,12 +4,14 @@ import tkinter.messagebox as msgbox
 import json
 import os
 import threading
-
+import subprocess
+from utils_path import get_adb_path  # 确保你已有这个函数
 from function.adventure import start_adventure
 # === 导入后台逻辑与停止事件 ===
 from function.auto_practice import start_practice
-from stop_event import stop_event
+
 from task_switch import task_switch
+from threading import Event
 
 # === 本地存储 JSON 文件路径 ===
 data_file = 'settings.json'
@@ -28,6 +30,8 @@ adventure_name = tk.StringVar(value="赌场")
 count_max = tk.DoubleVar(value=0)
 task = tk.StringVar(value="躺床")
 performance = tk.StringVar(value="高性能模式")
+emulator = tk.StringVar(value="MuMu")  # 默认选择 MuMu
+
 # === 控制按钮状态 ===
 is_running = False  # 标记程序是否在运行
 start_button = None  # 用于后面引用“启动/停止”按钮
@@ -35,6 +39,56 @@ task_thread = None  # 后台线程引用
 adventure_thread = None
 info_label = None
 running_label = None
+stop_event = None
+
+
+def connect_emulator():
+    """自动检测并连接模拟器，设置 emulator 变量"""
+    try:
+        # 先断开所有连接，避免残留
+        subprocess.run([get_adb_path(), "disconnect"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+        # 常用模拟器端口及名称映射
+        emulator_ports = {
+            "127.0.0.1:7555": "MuMu",
+            "127.0.0.1:5555": "雷电"
+        }
+
+        # 主动尝试连接所有可能的端口
+        emulator_found = False
+        for ip_port, name in emulator_ports.items():
+            try:
+                subprocess.run([get_adb_path(), "connect", ip_port], check=True, stdout=subprocess.DEVNULL)
+                emulator.set(name)
+                emulator_found = True
+                break  # 一旦连接成功立即使用
+            except subprocess.CalledProcessError:
+                continue  # 尝试下一个
+
+        # 如果前面主动连接失败，再读取 adb devices 里是否已有连接
+        result = subprocess.run([get_adb_path(), "devices"], capture_output=True, text=True)
+        lines = result.stdout.strip().split("\n")[1:]
+
+        for line in lines:
+            if "127.0.0.1" in line and "device" in line:
+                port = line.split(":")[-1].split("\t")[0]
+                if port == "7555":
+                    emulator.set("MuMu")
+                elif port == "5555":
+                    emulator.set("雷电")
+                else:
+                    emulator.set("未知")
+                return True  # 找到了已连接设备
+
+        if not emulator_found:
+            msgbox.showerror("ADB 错误", "无法连接任何已知模拟器端口，请确认模拟器是否开启并允许ADB连接。")
+            return False
+
+        return True
+
+    except Exception as e:
+        msgbox.showerror("ADB 错误", f"连接模拟器失败：{str(e)}")
+        return False
 
 
 def show_tooltip(event, text):
@@ -108,10 +162,17 @@ def load_data():
 
             performance_data = data.get('performance_data', {})
             performance.set(performance_data.get('performance', '高性能模式'))
+            emulator_data = data.get('emulator_data', {})
+            emulator.set(emulator_data.get('emulator', 'MuMu'))  # 默认 MuMu
 
 
 # === 保存数据到本地 ===
 def save_data():
+    emulator_data = {
+        'emulator': emulator.get()
+    }
+    # 添加进最终存储结构：
+
     # 睡觉页面数据
     sleep_data = {
         'speed': speed.get(),
@@ -139,7 +200,8 @@ def save_data():
         'sleep_data': sleep_data,
         'adventure_data': adventure_data,
         'task_data': task_data,
-        'performance_data': performance_data
+        'performance_data': performance_data,
+        'emulator_data': emulator_data
     }
 
     with open(data_file, 'w', encoding='utf-8') as f:
@@ -147,49 +209,61 @@ def save_data():
 
 
 # === 启动函数：调用后台任务 ===
-def start_button_click(task):
-    global is_running, task_thread, adventure_thread, info_label
-    if not is_running:  # 如果当前不是运行状态
-        stop_event.clear()  # 清除停止事件，准备开始任务
+def start_button_click(task_value):
+    global is_running, task_thread, adventure_thread, stop_event
 
-        # 从输入框中获取用户配置
-        folder_path = "../screen_temp"
-        speed_value = speed.get()
-        art_name_value = art_name.get()
-        target_level_value = target_level.get()
-        discount_value = discount.get()
-        performance_value = performance.get()
+    # 如果已有任务在运行，先安全终止
+    if task_thread and task_thread.is_alive():
+        stop_event.set()
+        task_thread.join(timeout=2)
+        task_thread = None
+    if adventure_thread and adventure_thread.is_alive():
+        stop_event.set()
+        adventure_thread.join(timeout=2)
+        adventure_thread = None
 
-        if task_switch(task) == "practice":
-            # 启动修炼任务的线程
+    stop_event = threading.Event()  # 创建新的 stop_event
+
+    if not connect_emulator():
+        msgbox.showerror("连接失败", "无法连接模拟器")
+        return
+
+    folder_path = "../screen_temp"
+    os.makedirs(folder_path, exist_ok=True)
+
+    speed_value = speed.get()
+    art_name_value = art_name.get()
+    target_level_value = target_level.get()
+    discount_value = discount.get()
+    performance_value = performance.get()
+
+    try:
+        if task_switch(task_value) == "practice":
             task_thread = threading.Thread(
                 target=start_practice,
-                args=(
-                    folder_path, speed_value, art_name_value, target_level_value, discount_value, performance_value,
-                    stop_event, update_ui)
+                args=(folder_path, speed_value, art_name_value, target_level_value,
+                      discount_value, performance_value, stop_event, update_ui)
             )
-            task_thread.daemon = True  # 设置为守护线程
+            task_thread.daemon = True
             task_thread.start()
-            update_ui(mode="practice", progress=[0, 100])  # 确保传递有效的 progress
+            update_ui(mode="practice", progress=[0, 100])
 
-        elif task_switch(task) == "adventure":
-            # 启动冒险任务的线程
+        elif task_switch(task_value) == "adventure":
             adventure_thread = threading.Thread(
                 target=start_adventure,
-                args=(adventure_name.get(), folder_path, count_max.get(), performance.get())  # Pass count_max value
+                args=(adventure_name.get(), folder_path, count_max.get(), performance.get(), stop_event)
             )
-            adventure_thread.daemon = True  # 设置为守护线程
+            adventure_thread.daemon = True
             adventure_thread.start()
-            update_ui(mode="adventure", progress=[0, 100])  # 确保传递有效的 progress
+            update_ui(mode="adventure", progress=[0, 100])
 
-        # 更改按钮文本为“停止”
-        start_button.config(text="停止", command=lambda: stop_button_click(task))
+        start_button.config(text="停止", command=lambda: stop_button_click(task_value))
         running_label.config(text="正在运行")
-
         is_running = True
-    else:
-        # 如果已经在运行，则调用停止函数
-        stop_button_click(task)
+
+    except Exception as e:
+        msgbox.showerror("任务启动错误", f"启动线程时出错：{e}")
+        print(f"[ERROR] 启动线程失败: {e}")
 
 
 def cleanup_screenshots(folder_path, stop_event):
@@ -202,31 +276,24 @@ def cleanup_screenshots(folder_path, stop_event):
 
 
 # === 停止修炼任务 ===
-def stop_button_click(task):
-    global is_running, adventure_thread, count, info_label
-    stop_event.set()  # 设置停止事件，通知后台线程退出
-    print(f"停止{task}任务")
+def stop_button_click(task_value):
+    global is_running, task_thread, adventure_thread, stop_event
 
-    # 等待后台线程安全结束
-    if adventure_thread is not None and adventure_thread.is_alive():
-        adventure_thread.join()  # 等待线程安全退出
+    if stop_event:
+        stop_event.set()
 
-    # 重置状态，准备启动新任务
+    if task_thread and task_thread.is_alive():
+        task_thread.join(timeout=2)
+        task_thread = None
+
+    if adventure_thread and adventure_thread.is_alive():
+        adventure_thread.join(timeout=2)
+        adventure_thread = None
+
     is_running = False
-    count = 1  # 重置计数器
-
-    # 恢复按钮文本为“启动”
-    start_button.config(text="启动", command=lambda: start_button_click(task))
-
-    # 恢复“运行中”标签为“请选择”
+    start_button.config(text="启动", command=lambda: start_button_click(task_value))
     running_label.config(text="请选择")
-
-    # 恢复信息文本为“找点事情做吧”
-    if info_label is None:
-        info_label = tk.Label(right_frame, text="找点事情做吧", font=("微软雅黑", 12, "bold"), bg="#ffffff")
-        info_label.pack(pady=20)
-    else:
-        info_label.config(text="找点事情做吧")  # 恢复显示文本
+    info_label.config(text="找点事情做吧")
 
 
 # === 界面逻辑：总览页 ===
@@ -256,10 +323,8 @@ def show_overview():
     start_button.pack(side="right", padx=10)
 
     separator = tk.Frame(mid_frame, bg="gray", height=2)
-    separator.pack(fill="x", padx=5, pady=5)
+    separator.pack(fill="x", padx=5, pady=10)
 
-    separator = tk.Frame(mid_frame, bg="gray", height=2)
-    separator.pack(fill="x", padx=5, pady=20)
     # 第二部分：运行中
     running_frame = tk.Frame(mid_frame)
     running_frame.pack(fill="x", padx=10)
@@ -275,7 +340,7 @@ def show_overview():
     task_combobox.grid(row=0, column=1, sticky="w", padx=5)
 
     separator = tk.Frame(mid_frame, bg="gray", height=2)
-    separator.pack(fill="x", padx=5, pady=20)
+    separator.pack(fill="x", padx=5, pady=10)
 
     method_combobox = ttk.Combobox(mid_frame, values=["高性能模式", "低性能模式"], textvariable=performance)
     method_combobox.pack(fill="x", expand=True, padx=10, pady=(10, 5))
@@ -425,7 +490,6 @@ mid_frame = tk.Frame(main_frame, bg="#f8f8f8", bd=1, relief="solid")
 mid_frame.pack(side="left", fill="both", expand=True, padx=(0, 10), ipadx=10, ipady=10)
 
 right_frame = tk.Frame(main_frame, bg="#f8f8f8", bd=1, relief="solid")
-# right_frame.pack(side="left", fill="both", expand=True)
 # 默认先显示“总览”页面
 show_overview()
 

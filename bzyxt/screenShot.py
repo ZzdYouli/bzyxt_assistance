@@ -1,6 +1,5 @@
 import subprocess
 import os
-import sys
 from datetime import datetime
 from utils_path import get_adb_path
 

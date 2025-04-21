@@ -10,9 +10,12 @@
         "count_max_data": 0.0
     },
     "task_data": {
-        "task": "躺床"
+        "task": "刷奇遇"
     },
     "performance_data": {
         "performance": "低性能模式"
+    },
+    "emulator_data": {
+        "emulator": "MuMu"
     }
 }

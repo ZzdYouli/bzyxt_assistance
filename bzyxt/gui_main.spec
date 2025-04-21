@@ -22,7 +22,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='gui_main',
+    name='暴走英雄坛躺床辅助器测试版v0.27',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
