@@ -1,9 +1,9 @@
 {
     "sleep_data": {
-        "speed": 433441.0,
+        "speed": 373320.0,
         "art_name": "玉女剑法",
         "target_level": "",
-        "discount": 30.0
+        "discount": 43.8
     },
     "adventure_data": {
         "adventure_name": "赌场",
@@ -14,5 +14,8 @@
     },
     "performance_data": {
         "performance": "低性能模式"
+    },
+    "emulator_data": {
+        "emulator": "MuMu"
     }
 }

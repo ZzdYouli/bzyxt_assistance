@@ -1,21 +1,20 @@
 import logging
 import subprocess
-import time
 import cv2
 import pytesseract
 import os
-from screenShot import capture_screenshot  # 假设你已经实现了capture_screenshot函数
 import numpy as np
-from stop_event import stop_event  # 引入 stop_event 用于检查停止信号
+
+from sleep_utils import interruptible_sleep
+from screenShot import capture_screenshot  # 假设你已经实现了capture_screenshot函数
 from utils_path import get_adb_path
 
 # 可选：修改为你的 Tesseract 安装路径
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 
-def adb_click(x, y):
-    """通过 ADB 模拟点击操作"""
-    if stop_event.is_set():
+def adb_click(x, y, stop_event):
+    if stop_event and stop_event.is_set():
         return False
 
     result = subprocess.run(
@@ -31,9 +30,8 @@ def adb_click(x, y):
     return True
 
 
-def detect_image(image_path, confidence=0.8, folder_path="../screen_temp"):
-    """识别图像是否出现在当前截图中"""
-    if stop_event.is_set():
+def detect_image(image_path, confidence=0.8, folder_path="../screen_temp", stop_event=None):
+    if stop_event and stop_event.is_set():
         return False
 
     screenshot_path = capture_screenshot(folder_path)
@@ -53,12 +51,11 @@ def detect_image(image_path, confidence=0.8, folder_path="../screen_temp"):
     return loc[0].size > 0
 
 
-def click_image(image_path, confidence=0.8, folder_path="../screen_temp"):
-    """点击图像，点击前先进行截图"""
-    if stop_event.is_set():
+def click_image(image_path, confidence=0.8, folder_path="../screen_temp", stop_event=None):
+    if stop_event and stop_event.is_set():
         return False
 
-    screenshot_path = capture_screenshot(folder_path)  # 每次调用 capture_screenshot() 都传递文件夹路径
+    screenshot_path = capture_screenshot(folder_path)
 
     if not os.path.exists(screenshot_path):
         logging.info(f"❌ 无法找到截图文件 {screenshot_path}")
@@ -71,43 +68,38 @@ def click_image(image_path, confidence=0.8, folder_path="../screen_temp"):
     target_gray = cv2.cvtColor(target_image, cv2.COLOR_BGR2GRAY)
 
     res = cv2.matchTemplate(screenshot_gray, target_gray, cv2.TM_CCOEFF_NORMED)
-    threshold = confidence  # 设定匹配阈值
-    loc = np.where(res >= threshold)
+    loc = np.where(res >= confidence)
 
     if loc[0].size > 0:
-        # 获取匹配到的位置
         top_left = (loc[1][0], loc[0][0])
         center_x = top_left[0] + target_image.shape[1] // 2
         center_y = top_left[1] + target_image.shape[0] // 2
 
-        # 使用 ADB 执行点击
-        adb_click(center_x, center_y)
+        adb_click(center_x, center_y, stop_event)
         return True
     else:
         logging.info(f"❌ 未找到图像 [{image_path}]")
         return False
 
 
-# --- 智能封装：点击前自动截图 ---
-def smart_click_image(image_path, confidence=0.9, folder_path="../screen_temp"):
-    if stop_event.is_set():
+def smart_click_image(image_path, confidence=0.9, folder_path="../screen_temp", stop_event=None):
+    if stop_event and stop_event.is_set():
         return False
 
-    capture_screenshot(folder_path)  # 每次点击前都截图
-    result = click_image(image_path, confidence, folder_path)
+    capture_screenshot(folder_path)
+    result = click_image(image_path, confidence, folder_path, stop_event)
     return result
 
 
-def smart_scroll(folder_path="../screen_temp"):
-    if stop_event.is_set():
+def smart_scroll(folder_path="../screen_temp", stop_event=None):
+    if stop_event and stop_event.is_set():
         return False
 
-    capture_screenshot(folder_path)  # 每次滚动前都截图
+    capture_screenshot(folder_path)
 
-    # 滑动起点和终点
-    start_x, start_y = 460, 800  # 滑动起点
-    end_x, end_y = 460, 500  # 滑动终点
-    duration = 1000  # 滑动时间（毫秒）
+    start_x, start_y = 460, 800
+    end_x, end_y = 460, 500
+    duration = 1000
 
     try:
         result = subprocess.run(
@@ -116,24 +108,21 @@ def smart_scroll(folder_path="../screen_temp"):
             text=True,
             capture_output=True
         )
-
         if result.returncode != 0:
             logging.info(f"❌ ADB 命令执行失败，错误信息：{result.stderr}")
-
     except Exception as e:
         logging.info(f"❌ 错误：{str(e)}")
 
 
-def smart_scroll_learn(folder_path="../screen_temp"):
-    if stop_event.is_set():
+def smart_scroll_learn(folder_path="../screen_temp", stop_event=None):
+    if stop_event and stop_event.is_set():
         return False
 
-    capture_screenshot(folder_path)  # 每次滚动前都截图
+    capture_screenshot(folder_path)
 
-    # 滑动起点和终点
-    start_x, start_y = 350, 1200  # 滑动起点
-    end_x, end_y = 350, 900  # 滑动终点
-    duration = 1000  # 滑动时间（毫秒）
+    start_x, start_y = 350, 1200
+    end_x, end_y = 350, 900
+    duration = 1000
 
     try:
         result = subprocess.run(
@@ -142,39 +131,39 @@ def smart_scroll_learn(folder_path="../screen_temp"):
             text=True,
             capture_output=True
         )
-
         if result.returncode != 0:
             logging.info(f"❌ ADB 命令执行失败，错误信息：{result.stderr}")
-
     except Exception as e:
         logging.info(f"❌ 错误：{str(e)}")
 
 
-def smart_click_and_scroll_loop(art_name, max_iterations=5,
-                                folder_path="../screen_temp"):
+def smart_click_and_scroll_loop(art_name, max_iterations=5, folder_path="../screen_temp", stop_event=None):
     for i in range(max_iterations):
-        if stop_event.is_set():
+        if stop_event and stop_event.is_set():
             return False
 
-        if smart_click_image(f"../assets/Martial arts/{art_name}.png", confidence=0.9):
-            if detect_image("../assets/main_if/find_pair.png"):
+        if smart_click_image(f"../assets/Martial arts/{art_name}.png", confidence=0.9, folder_path=folder_path,
+                             stop_event=stop_event):
+            if detect_image("../assets/main_if/find_pair.png", stop_event=stop_event):
                 return False
             return True
-        smart_scroll(folder_path)
-        time.sleep(1.5)
+
+        smart_scroll(folder_path, stop_event)
+        interruptible_sleep(1.5, stop_event)
     return False
 
 
-def smart_click_and_scroll_loop_learn(art_name, max_iterations=5,
-                                      folder_path="../screen_temp"):
+def smart_click_and_scroll_loop_learn(art_name, max_iterations=5, folder_path="../screen_temp", stop_event=None):
     for i in range(max_iterations):
-        if stop_event.is_set():
+        if stop_event and stop_event.is_set():
             return False
 
-        if smart_click_image(f"../assets/Martial arts/{art_name}1.png", confidence=0.9):
-            if detect_image("../assets/main_if/find_pair.png"):
+        if smart_click_image(f"../assets/Martial arts/{art_name}1.png", confidence=0.9, folder_path=folder_path,
+                             stop_event=stop_event):
+            if detect_image("../assets/main_if/find_pair.png", stop_event=stop_event):
                 return False
             return True
-        smart_scroll_learn(folder_path)
-        time.sleep(1.5)
+
+        smart_scroll_learn(folder_path, stop_event)
+        interruptible_sleep(1.5, stop_event)
     return False
