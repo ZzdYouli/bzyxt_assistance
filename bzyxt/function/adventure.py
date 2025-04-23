@@ -22,12 +22,12 @@ def adventure(adventure_name, count_max, performance, stop_event):
             break
         a = 1.5 if performance == '低性能模式' else 1
         reset(performance, stop_event)
-        smart_click_image("../assets/button/task.png", stop_event=stop_event)
+        smart_click_image("../assets/button/task.png", confidence=0.9, stop_event=stop_event)
         interruptible_sleep(0.2 * a, stop_event)
         adb_click(445, 1010, stop_event)
         interruptible_sleep(0.5 * a, stop_event)
         to_post(performance, stop_event)
-        smart_click_image("../assets/post/tjs.png", stop_event=stop_event)
+        smart_click_image("../assets/post/tjs.png", confidence=0.9, stop_event=stop_event)
         interruptible_sleep(0.5 * a, stop_event)
         adb_click(445, 1010, stop_event)
         interruptible_sleep(0.5 * a, stop_event)

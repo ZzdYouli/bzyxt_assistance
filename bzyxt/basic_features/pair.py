@@ -12,4 +12,4 @@ def pair(art_name, performance, stop_event):
     interruptible_sleep(1 * a, stop_event)
     adb_click(450, 1200, stop_event)
     interruptible_sleep(1 * a, stop_event)
-    smart_click_and_scroll_loop(art_name)
+    smart_click_and_scroll_loop(art_name, stop_event=stop_event)

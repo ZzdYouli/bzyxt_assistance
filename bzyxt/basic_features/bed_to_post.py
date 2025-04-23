@@ -16,5 +16,5 @@ def bed_to_post(performance, stop_event):
     adb_click(350, 1140, stop_event)
     interruptible_sleep(1 * a, stop_event)
 
-    smart_click_image("../assets/button/post.png")
+    smart_click_image("../assets/button/post.png", confidence=0.9, stop_event=stop_event)
     interruptible_sleep(0.8 * a, stop_event)
