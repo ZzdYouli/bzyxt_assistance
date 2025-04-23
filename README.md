@@ -5,20 +5,25 @@
 环境配置：下载并安装tesseract-ocr-w64-setup-5.5.0.20241111.exe，一直确定，等待安装完成即可。
 下载链接：https://github.com/UB-Mannheim/tesseract/wiki
 
-使用说明：
-模拟器：雷神模拟器（其他模拟器没有实验过，效果不明）平板模式分辨率1280*720
-开启开发者模式：设置->关于平板电脑->连续点击版本号（不确定是否必需）
+分辨率设置：平板模式分辨率1280*720
 模拟器设置：软件测试->其他->ADB调试->开启本地连接
 
 打开方式：解压后->bzyxt->dist->gui_main.exe
 
 使用演示：
-躺床功能：   【暴走英雄坛躺床辅助器测试版v0.1】 https://www.bilibili.com/video/BV1LXZXYhEtX/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
-刷奇遇功能： 【暴走英雄坛躺床辅助器测试版v0.2】 https://www.bilibili.com/video/BV1KzRBYAESy/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
+躺床功能：【暴走英雄坛躺床辅助器测试版v0.1】 https://www.bilibili.com/video/BV1LXZXYhEtX/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
+
+刷奇遇功能：【暴走英雄坛躺床辅助器测试版v0.2】 https://www.bilibili.com/video/BV1KzRBYAESy/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
 功能优化，添加血刀，五毒，伊贺功法：【暴走英雄坛躺床辅助器测试版v0.25】 https://www.bilibili.com/video/BV1TxdKY1E9B/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
 
+更新说明：
 
-注意事项：由于刷奇遇功能并没有十分完善，推荐最大次数设为0，修改奇遇后要先退出重进再启动。
+v0.2 添加刷奇遇功能
+
+v0.25 添加性能模式选择，避免因为网络卡顿导致点击失败
+
+v0.27 添加模拟器自动选择功能，适配MuMu模拟器和雷电模拟器。优化性能，各种操作更流畅
+
