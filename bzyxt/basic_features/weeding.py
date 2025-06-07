@@ -1,5 +1,5 @@
 from action_engine import adb_click, detect_image, smart_click_image
-
+from basic_features.reset import reset
 
 from sleep_utils import interruptible_sleep
 
@@ -14,6 +14,7 @@ final_y = 960
 
 def weeding(performance, stop_event):
     a = 1.5 if performance == '低性能模式' else 1
+    reset(performance, stop_event)
     if detect_image("../assets/button/running.png") is False:
         adb_click(630, 960, stop_event)
         interruptible_sleep(0.2 * a, stop_event)

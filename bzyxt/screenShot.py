@@ -1,33 +1,41 @@
 import subprocess
 import os
+import time
 from datetime import datetime
 from utils_path import get_adb_path
+from utils import global_state as g
 
 
 def capture_screenshot(folder_path="../screen_temp"):
-    # 确保目标文件夹存在
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    # 获取 adb.exe 的完整路径（tools 目录下）
+    device_id = g.adb_target_device
+    device_path = "/data/local/tmp/screenshot_temp.png"  # 更保险的路径
 
-    # 执行 adb 截图命令
+    for attempt in range(5):
+        try:
+            # 可选：检查设备是否在线
+            result = subprocess.run([get_adb_path(), "-s", device_id, "get-state"],
+                                    capture_output=True, text=True)
+            if "device" not in result.stdout:
+                raise RuntimeError("设备未连接")
 
-    subprocess.run([get_adb_path(), "shell", "screencap", "-p", "/sdcard/screenshot.png"])
+            # 截图
+            subprocess.run([get_adb_path(), "-s", device_id, "shell", "screencap", "-p", device_path],
+                           check=True)
 
-    # 保存截图到本地
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    screenshot_path = os.path.join(folder_path, f"screenshot_{timestamp}.png")
+            # pull 到本地
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            local_path = os.path.join(folder_path, f"screenshot_{timestamp}.png")
 
-    # 执行 adb pull 命令拉取截图
-    subprocess.run(
-        [get_adb_path(), "pull", "/sdcard/screenshot.png", screenshot_path],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+            subprocess.run([get_adb_path(), "-s", device_id, "pull", device_path, local_path],
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
-    return screenshot_path
+            return local_path  # 成功返回
 
+        except Exception as e:
+            print(f"[截图重试] 第 {attempt + 1} 次失败: {e}")
+            time.sleep(2)
 
-# 测试运行
-capture_screenshot()
+    raise RuntimeError("连续五次截图失败")

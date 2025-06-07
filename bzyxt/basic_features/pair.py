@@ -1,6 +1,5 @@
 from basic_features.reset import reset
 from action_engine import adb_click, smart_click_and_scroll_loop
-import time
 from sleep_utils import interruptible_sleep
 
 

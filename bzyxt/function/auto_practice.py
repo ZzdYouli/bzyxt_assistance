@@ -1,23 +1,21 @@
+import logging
 import random
+from threading import Thread
 
+from action_engine import adb_click, smart_click_and_scroll_loop, detect_image
+from arts_switch import arts_switch
+from arts_to_practice.bhg.lqz import lqz
+from arts_to_practice.cxg.xd import xd
+from arts_to_practice.mj.hfh import hfh
+from arts_to_practice.xyd.tqgs import tqgs
 from basic_features.bed_to_post import bed_to_post
+from basic_features.pair import pair
 from basic_features.reset import reset
 from basic_features.to_bed import to_bed
-from action_engine import adb_click, smart_click_and_scroll_loop
-from arts_to_practice.bhg.lqz import lqz
-from arts_to_practice.mj.hfh import hfh
-from arts_to_practice.cxg.xd import xd
-from arts_to_practice.xyd.tqgs import tqgs
-from path_pick import path_pick
-from image_handler import extract_progress_data, extract_countdown_timer
-from basic_features.pair import pair
 from cleanup import cleanup_screenshots
+from image_handler import extract_progress_data, extract_countdown_timer
+from path_pick import path_pick
 from screenShot import capture_screenshot
-from threading import Thread
-from arts_switch import arts_switch
-import time
-import logging
-
 from sleep_utils import interruptible_sleep
 
 
@@ -25,7 +23,7 @@ def cleanup_task(folder_path, stop_event):
     cleanup_screenshots(folder_path, stop_event)
 
 
-def process_screenshot(folder_path, speed, art_name, target_level, discount, stop_event, performance, update_ui):
+def practice(folder_path, speed, art_name, discount, stop_event, performance, update_ui, check):
     while not stop_event.is_set():
         try:
             latest_screenshot = capture_screenshot(folder_path)
@@ -37,47 +35,47 @@ def process_screenshot(folder_path, speed, art_name, target_level, discount, sto
                 ratio = current / total
                 need = 1 - (discount / 100)
                 factor = need + 0.05
-                interval = ((float(factor * total - current)) / speed)
 
-                if ratio >= factor:
-                    update_ui(mode="running")
+                art = art_name.get() if hasattr(art_name, "get") else art_name
+                perf = performance.get() if hasattr(performance, "get") else performance
+                path = path_pick(art)
+                if check is True:
+                    interval = ((float(factor * total - current)) / speed)
+                    if ratio >= factor:
+                        update_ui(mode="running")
 
-                    adb_click(40, 40, stop_event)
-                    interruptible_sleep(0.8, stop_event)
-                    adb_click(40, 40, stop_event)
-                    interruptible_sleep(0.8, stop_event)
-                    bed_to_post(performance, stop_event)
+                        adb_click(40, 40, stop_event)
+                        interruptible_sleep(0.8, stop_event)
+                        adb_click(40, 40, stop_event)
+                        interruptible_sleep(0.8, stop_event)
+                        bed_to_post(performance, stop_event)
 
-                    art = art_name.get() if hasattr(art_name, "get") else art_name
-                    perf = performance.get() if hasattr(performance, "get") else performance
-                    path = path_pick(art)
+                        if path == "xd":
+                            xd(art, perf, stop_event)
+                        elif path == "lqz":
+                            lqz(art, perf, stop_event)
+                        elif path == "tqgs":
+                            tqgs(art, perf, stop_event)
+                        elif path == "hfh":
+                            hfh(art, perf, stop_event)
+                        else:
+                            raise ValueError(f"未知武学路径: {art} => {path}")
 
-                    print(f"当前功法: {art}, 选择路径: {path}")
+                        to_bed(perf, stop_event)
 
-                    if path == "xd":
-                        xd(art, perf, stop_event)
-                    elif path == "lqz":
-                        lqz(art, perf, stop_event)
-                    elif path == "tqgs":
-                        tqgs(art, perf, stop_event)
-                    elif path == "hfh":
-                        hfh(art, perf, stop_event)
-                    else:
-                        print(f"[警告] 未知功法路径: {art} => {path}")
-
-                    to_bed(perf, stop_event)
-
-                    if smart_click_and_scroll_loop(art, stop_event=stop_event) is not True:
-                        pair(art, perf, stop_event)
-
+                        if smart_click_and_scroll_loop(art, stop_event=stop_event) is not True:
+                            pair(art, perf, stop_event)
                 else:
-                    update_ui(
-                        progress=[current, total],
-                        level=level,
-                        remaining_time=interval * 60,
-                        target_level=target_level,
-                        mode="practice"
-                    )
+                    interval = ((float(total - current)) / speed)
+                    if detect_image("../assets/main_if/find_pair.png", stop_event=stop_event) is True:
+                        pair(art, perf, stop_event)
+                update_ui(
+                    progress=[current, total],
+                    level=level,
+                    remaining_time=interval * 60,
+
+                    mode="practice"
+                )
             elif countdown is not None:
                 update_ui(countdown=countdown, mode="retreat")
 
@@ -89,19 +87,20 @@ def process_screenshot(folder_path, speed, art_name, target_level, discount, sto
 
         except Exception as e:
             logging.error(f"处理截图时发生错误: {e}")
-            interruptible_sleep(60, stop_event)
+            interruptible_sleep(30, stop_event)
 
         interruptible_sleep(random.uniform(3, 5), stop_event)
 
 
-def start_practice(folder_path, speed, art_name, target_level, discount, performance, stop_event, update_ui):
+def start_practice(folder_path, speed, art_name, discount, performance, stop_event, update_ui, check):
     cleanup_thread = Thread(target=cleanup_task, args=(folder_path, stop_event))
     cleanup_thread.daemon = True
     cleanup_thread.start()
 
-    process_thread = Thread(target=process_screenshot,
+    process_thread = Thread(target=practice,
                             args=(
-                            folder_path, speed, art_name, target_level, discount, stop_event, performance, update_ui))
+                                folder_path, speed, art_name, discount, stop_event, performance,
+                                update_ui, check))
     process_thread.daemon = True
     process_thread.start()
 

@@ -1,11 +1,10 @@
 from action_engine import adb_click, smart_click_image, smart_click_and_scroll_loop_learn
-import time
 from basic_features.reset import reset
 from arts_to_practice.cxg.cxg_path import cxg_path
 from sleep_utils import interruptible_sleep
 
-def xd(art_name, performance, stop_event):
 
+def xd(art_name, performance, stop_event):
     smart_click_image("../assets/post/cxg.png", confidence=0.8, stop_event=stop_event)
 
     interruptible_sleep(1.5, stop_event)

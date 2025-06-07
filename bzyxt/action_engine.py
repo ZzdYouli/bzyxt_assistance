@@ -1,12 +1,14 @@
 import logging
-import subprocess
-import cv2
-import pytesseract
 import os
-import numpy as np
+import subprocess
 
-from sleep_utils import interruptible_sleep
+import cv2
+import numpy as np
+import pytesseract
+
 from screenShot import capture_screenshot  # 假设你已经实现了capture_screenshot函数
+from sleep_utils import interruptible_sleep
+from utils import global_state as g
 from utils_path import get_adb_path
 
 # 可选：修改为你的 Tesseract 安装路径
@@ -18,7 +20,7 @@ def adb_click(x, y, stop_event):
         return False
 
     result = subprocess.run(
-        [get_adb_path(), "shell", "input", "tap", str(x), str(y)],
+        [get_adb_path(), "-s", g.adb_target_device, "shell", "input", "tap", str(x), str(y)],
         capture_output=True,
         text=True
     )
@@ -82,13 +84,25 @@ def click_image(image_path, confidence=0.8, folder_path="../screen_temp", stop_e
         return False
 
 
-def smart_click_image(image_path, confidence=0.9, folder_path="../screen_temp", stop_event=None):
+def smart_click_image(image_path, confidence=0.9, folder_path="../screen_temp", stop_event=None, max_retry=5):
     if stop_event and stop_event.is_set():
         return False
 
-    capture_screenshot(folder_path)
-    result = click_image(image_path, confidence, folder_path, stop_event)
-    return result
+    for attempt in range(max_retry):
+        if stop_event and stop_event.is_set():
+            return False
+
+        logging.info(f"[点击尝试] 第 {attempt + 1} 次尝试点击图像：{image_path}")
+        capture_screenshot(folder_path)
+        success = click_image(image_path, confidence, folder_path, stop_event)
+
+        if success:
+            logging.info("[点击成功]")
+            return True
+        else:
+            logging.info(f"[未匹配到图像] 第 {attempt + 1} 次未命中 {image_path}")
+
+    return False
 
 
 def smart_scroll(folder_path="../screen_temp", stop_event=None):
@@ -103,7 +117,8 @@ def smart_scroll(folder_path="../screen_temp", stop_event=None):
 
     try:
         result = subprocess.run(
-            [get_adb_path(), "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y),
+            [get_adb_path(), "-s", g.adb_target_device, "shell", "input", "swipe", str(start_x), str(start_y),
+             str(end_x), str(end_y),
              str(duration)],
             text=True,
             capture_output=True
@@ -126,7 +141,8 @@ def smart_scroll_learn(folder_path="../screen_temp", stop_event=None):
 
     try:
         result = subprocess.run(
-            [get_adb_path(), "shell", "input", "swipe", str(start_x), str(start_y), str(end_x), str(end_y),
+            [get_adb_path(), "-s", g.adb_target_device, "shell", "input", "swipe", str(start_x), str(start_y),
+             str(end_x), str(end_y),
              str(duration)],
             text=True,
             capture_output=True

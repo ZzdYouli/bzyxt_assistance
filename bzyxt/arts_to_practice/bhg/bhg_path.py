@@ -1,6 +1,4 @@
 from action_engine import adb_click
-import time
-
 from sleep_utils import interruptible_sleep
 
 
