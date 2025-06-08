@@ -15,6 +15,7 @@ performance = None
 emulator = None
 weeding = None
 check = None
+art_type = None
 
 # 控制变量（非tk类型）
 is_running = False
@@ -24,20 +25,22 @@ adventure_thread = None
 stop_event = None
 info_label = None
 running_label = None
-adb_target_device = None  # 用于 adb -s 连接指定设备
+adb_target_device = None
 fail_count = 0
 saved_task_info = {}
 
 
 def init_variables(master):
-    global root, speed, art_name,  discount
-    global adventure_name,  task, performance
+    global root, speed, art_name, discount
+    global adventure_name, task, performance
     global emulator, weeding, check
+    global art_type
 
     root = master
 
     # 初始化 tkinter 控件绑定变量
     speed = tk.DoubleVar(master, value=100000)
+    art_type = tk.StringVar(master, value="剑法")
     art_name = tk.StringVar(master, value="玉女剑法")
     discount = tk.DoubleVar()
     adventure_name = tk.StringVar(master, value="赌场")

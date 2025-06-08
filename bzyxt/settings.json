@@ -1,7 +1,8 @@
 {
     "sleep_data": {
         "speed": 100000.0,
-        "art_name": "七杀拳",
+        "art_type": "鞭法",
+        "art_name": "天女鞭法",
         "discount": 0.0,
         "check": true
     },

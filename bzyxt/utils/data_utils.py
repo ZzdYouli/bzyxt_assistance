@@ -1,6 +1,7 @@
 # utils/data_utils.py
 import json
 import os
+
 from utils import global_state as g
 
 data_file = 'settings.json'
@@ -10,6 +11,7 @@ def save_data():
     data = {
         'sleep_data': {
             'speed': g.speed.get(),
+            'art_type': g.art_type.get(),
             'art_name': g.art_name.get(),
             'discount': g.discount.get(),
             'check': g.check.get()
@@ -43,12 +45,12 @@ def load_data():
 
             sleep_data = data.get('sleep_data', {})
             g.speed.set(sleep_data.get('speed', 100000))
+            g.art_type.set(sleep_data.get('art_type', 0))
             g.art_name.set(sleep_data.get('art_name', "玉女剑法"))
             g.discount.set(sleep_data.get('discount', 0.0))
 
             adventure_data = data.get('adventure_data', {})
             g.adventure_name.set(adventure_data.get('adventure_name', '赌场'))
-
 
             task_data = data.get('task_data', {})
             g.task.set(task_data.get('task', '躺床'))

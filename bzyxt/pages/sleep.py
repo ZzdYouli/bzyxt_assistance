@@ -33,7 +33,7 @@ def sleep_page(mid_frame, right_frame, save_data):
 
     # 分类下拉
     tk.Label(top_frame, text="分类：", font=("微软雅黑", 12)).grid(row=0, column=0, sticky="w")
-    category_combobox = ttk.Combobox(top_frame, values=category_list, state="readonly")
+    category_combobox = ttk.Combobox(top_frame, values=category_list, state="readonly", textvariable=g.art_type)
     category_combobox.grid(row=0, column=1, sticky="w", padx=5)
 
     # 功法下拉（与 g.art_name 绑定）
@@ -52,9 +52,22 @@ def sleep_page(mid_frame, right_frame, save_data):
 
     category_combobox.bind("<<ComboboxSelected>>", update_methods)
 
-    # 默认初始化为第一个分类
-    category_combobox.current(0)
-    update_methods(None)
+    # 初始化分类和武学显示（避免覆盖已保存设置）
+    if g.art_type.get() in category_list:
+        category_combobox.set(g.art_type.get())
+    else:
+        category_combobox.current(0)
+        g.art_type.set(category_list[0])
+
+    # 初始化武学列表（不设置默认选中武学）
+    selected_category = category_combobox.get()
+    methods = method_categories.get(selected_category, [])
+    method_combobox["values"] = methods
+    if g.art_name.get() in methods:
+        method_combobox.set(g.art_name.get())
+    elif methods:
+        method_combobox.current(0)
+        g.art_name.set(methods[0])
 
     check_discount_checkbox = tk.Checkbutton(
         container,
