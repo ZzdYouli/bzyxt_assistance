@@ -1,4 +1,6 @@
 # -*- mode: python ; coding: utf-8 -*-
+
+
 a = Analysis(
     ['main.py'],
     pathex=[],
@@ -8,7 +10,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['PIL', 'Pillow'],
+    excludes=[],
     noarchive=False,
     optimize=0,
 )
@@ -23,7 +25,7 @@ exe = EXE(
     name='暴走英雄坛躺床辅助器测试版v0.3',
     debug=False,
     bootloader_ignore_signals=False,
-    strip=True,
+    strip=False,
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,

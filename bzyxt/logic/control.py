@@ -70,8 +70,7 @@ def start_button_click(task_value):
                     g.adventure_name.get(),
                     folder_path,
                     g.performance.get(),
-                    g.stop_event,
-                    lambda: on_adventure_finished(task_value)  # 关键改动：传递回调函数
+                    g.stop_event
                 )
             )
             g.adventure_thread.daemon = True
