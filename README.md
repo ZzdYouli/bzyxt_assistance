@@ -18,6 +18,7 @@
 
 功能优化，添加血刀，五毒，伊贺功法：【暴走英雄坛躺床辅助器测试版v0.25】 https://www.bilibili.com/video/BV1TxdKY1E9B/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
+性能优化，添加大部分江湖武学：【暴走英雄坛躺床辅助器测试版v0.3】 https://www.bilibili.com/video/BV1hyTdzLE5P/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
 更新说明：
 
