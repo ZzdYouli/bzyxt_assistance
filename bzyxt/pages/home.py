@@ -1,6 +1,7 @@
 # ui/home.py
 import tkinter as tk
 from tkinter import ttk
+
 from utils import global_state as g
 
 
@@ -40,7 +41,7 @@ def home_page(mid_frame, right_frame, save_data, start_button_click, stop_button
     top_frame = tk.Frame(mid_frame)
     top_frame.pack(fill="both", expand=True, padx=10, pady=(10, 5))
 
-    task_combobox = ttk.Combobox(top_frame, values=["躺床", "刷奇遇"], textvariable=g.task)
+    task_combobox = ttk.Combobox(top_frame, values=["躺床", "刷奇遇", "打桩"], textvariable=g.task)
     task_combobox.grid(row=0, column=1, sticky="w", padx=5)
 
     task_combobox.bind("<<ComboboxSelected>>", lambda event: save_data())

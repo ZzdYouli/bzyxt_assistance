@@ -2,7 +2,7 @@
 from utils import global_state as g
 
 
-def update_ui(progress=None, level=None, remaining_time=None, mode="", countdown=None):
+def update_ui(progress=None, level=None, remaining_time=None, mode="", countdown=None, time=None):
     if progress is None:
         progress = [0, 0]
     if remaining_time is None:
@@ -23,6 +23,8 @@ def update_ui(progress=None, level=None, remaining_time=None, mode="", countdown
         )
     elif mode == "retreat":
         info_text = f"闭关中：{g.art_name.get()}\n闭关倒计时：{countdown}"
+    elif mode == "stump":
+        info_text = f"正在打桩\n打桩时间：{time}"
     elif mode == "running":
         info_text = "正在前往师傅处"
     elif mode == "adventure":

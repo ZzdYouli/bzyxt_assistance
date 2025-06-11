@@ -1,6 +1,9 @@
+import re
+
 import pytesseract
 from PIL import Image
-import re
+
+from utils_path import resource_path
 
 # 配置 Tesseract 路径（如果已经添加到系统 PATH，则这行也可以删）
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -39,7 +42,24 @@ def extract_countdown_timer(image_path):
     for pattern in patterns:
         match = re.search(pattern, text)
         from action_engine import detect_image
-        if match and detect_image("../assets/main_if/countdown.png"):
+        if match and detect_image(resource_path("assets", "main_if", "countdown.png")):
+            return match.group(1).replace("：", ":")  # 替换中文冒号
+
+    return None
+
+
+def extract_timer(image_path):
+    image = Image.open(image_path)
+    text = pytesseract.image_to_string(image, lang='chi_sim+eng')  # 加强中英文识别支持
+    # 多种可能的匹配方案（带冗余容错）
+    patterns = [
+        r'(\d{2}[:：]\d{2}[:：]\d{2})',  # 纯时间（没有“闭关”字眼）
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        from action_engine import detect_image
+        if match and detect_image(resource_path("assets", "main_if", "time.png")):
             return match.group(1).replace("：", ":")  # 替换中文冒号
 
     return None

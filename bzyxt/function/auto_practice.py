@@ -17,6 +17,7 @@ from image_handler import extract_progress_data, extract_countdown_timer
 from path_pick import path_pick
 from screenShot import capture_screenshot
 from sleep_utils import interruptible_sleep
+from utils_path import resource_path
 
 
 def cleanup_task(folder_path, stop_event):
@@ -39,7 +40,7 @@ def practice(folder_path, speed, art_name, discount, stop_event, performance, up
                 art = art_name.get() if hasattr(art_name, "get") else art_name
                 perf = performance.get() if hasattr(performance, "get") else performance
                 path = path_pick(art)
-                if check is True:
+                if check.get():
                     interval = ((float(factor * total - current)) / speed)
                     if ratio >= factor:
                         update_ui(mode="running")
@@ -67,7 +68,7 @@ def practice(folder_path, speed, art_name, discount, stop_event, performance, up
                             pair(art, perf, stop_event)
                 else:
                     interval = ((float(total - current)) / speed)
-                    if detect_image("../assets/main_if/find_pair.png", stop_event=stop_event) is True:
+                    if detect_image(resource_path("assets", "button", "find_pair.png"), stop_event=stop_event) is True:
                         pair(art, perf, stop_event)
                 update_ui(
                     progress=[current, total],

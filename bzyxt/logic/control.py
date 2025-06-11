@@ -6,21 +6,13 @@ from collections import deque
 
 from function.adventure import start_adventure
 from function.auto_practice import start_practice
+from function.stump import start_stump
 from logic.update_ui import update_ui
 from task_switch import task_switch
 from utils import global_state as g
 from utils.connect_emulator import connect_emulator
 
 error_history = {}
-
-
-def on_adventure_finished(task_value):
-    """用于在遇到目标奇遇后自动重置 UI 状态"""
-    if g.start_button and g.running_label:
-        g.start_button.config(text="启动", command=lambda: start_button_click(task_value))
-        g.running_label.config(text="请选择")
-        g.info_label.config(text="已遇到目标奇遇，任务结束")
-    g.is_running = False
 
 
 def start_button_click(task_value):
@@ -76,6 +68,19 @@ def start_button_click(task_value):
             g.adventure_thread.daemon = True
             g.adventure_thread.start()
             update_ui(mode="adventure", progress=[0, 100])
+
+        elif task_type == "stump":
+            g.task_thread = threading.Thread(
+                target=start_stump,
+                args=(
+                    folder_path,
+                    g.stop_event,
+                    update_ui,
+                    g.performance.get()
+                )
+            )
+            g.task_thread.daemon = True
+            g.task_thread.start()
 
         g.start_button.config(text="停止", command=lambda: stop_button_click(task_value))
         g.running_label.config(text="正在运行")

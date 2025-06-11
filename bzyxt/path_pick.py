@@ -5,7 +5,7 @@ def path_pick(art_name):
     elif art_name == "feiDie":
         return "lqz"
 
-    elif art_name == "suXinZhang":
+    elif art_name == "suXin":
         return "lqz"
 
     elif art_name == "wanDuShou":

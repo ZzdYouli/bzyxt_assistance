@@ -10,7 +10,7 @@ def tqgs(art_name, performance, stop_event):
     interruptible_sleep(1.5, stop_event)
 
     xyd_path(performance, stop_event)
-    smart_click_and_scroll_loop_learn(art_name, stop_event)
+    smart_click_and_scroll_loop_learn(art_name,stop_event=stop_event)
     interruptible_sleep(1, stop_event)
 
     smart_click_image("../assets/button/learn.png", confidence=0.5, stop_event=stop_event)

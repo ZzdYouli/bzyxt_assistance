@@ -14,7 +14,7 @@ def arts_switch(art_name):
 
     # 拳法
     elif art_name == "素心掌":
-        return "suXinZhang"
+        return "suXin"
 
     elif art_name == "虾米拳":
         return "xiaMi"

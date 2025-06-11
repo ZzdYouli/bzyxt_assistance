@@ -9,10 +9,10 @@ from utils import global_state as g
 def capture_screenshot(folder_path="../screen_temp"):
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
-
+    if not isinstance(folder_path, str):
+        raise TypeError(f"folder_path 必须是字符串路径，但收到的是 {type(folder_path)}")
     device_id = g.adb_target_device
     device_path = "/data/local/tmp/screenshot_temp.png"  # 更保险的路径
-
     for attempt in range(5):
         try:
             # 可选：检查设备是否在线

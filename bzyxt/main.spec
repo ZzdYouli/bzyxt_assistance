@@ -20,7 +20,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='暴走英雄坛躺床辅助器测试版v0.3',
+    name='暴走英雄坛躺床辅助器测试版v0.35',
     debug=False,
     bootloader_ignore_signals=False,
     strip=True,
@@ -38,5 +38,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=['AdbWinApi.dll', 'AdbWinUsbApi.dll'],
-    name='暴走英雄坛躺床辅助器测试版v0.3'
+    name='暴走英雄坛躺床辅助器测试版v0.35'
 )

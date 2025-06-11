@@ -6,10 +6,10 @@ import cv2
 import numpy as np
 import pytesseract
 
-from screenShot import capture_screenshot  # 假设你已经实现了capture_screenshot函数
+from screenShot import capture_screenshot
 from sleep_utils import interruptible_sleep
 from utils import global_state as g
-from utils_path import get_adb_path
+from utils_path import get_adb_path, resource_path
 
 # 可选：修改为你的 Tesseract 安装路径
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
@@ -32,9 +32,12 @@ def adb_click(x, y, stop_event):
     return True
 
 
-def detect_image(image_path, confidence=0.8, folder_path="../screen_temp", stop_event=None):
+def detect_image(image_path, confidence=0.8, folder_path=None, stop_event=None):
     if stop_event and stop_event.is_set():
         return False
+
+    if folder_path is None:
+        folder_path = resource_path("screen_temp")
 
     screenshot_path = capture_screenshot(folder_path)
 
@@ -53,9 +56,12 @@ def detect_image(image_path, confidence=0.8, folder_path="../screen_temp", stop_
     return loc[0].size > 0
 
 
-def click_image(image_path, confidence=0.8, folder_path="../screen_temp", stop_event=None):
+def click_image(image_path, confidence=0.8, folder_path=None, stop_event=None):
     if stop_event and stop_event.is_set():
         return False
+
+    if folder_path is None:
+        folder_path = resource_path("screen_temp")
 
     screenshot_path = capture_screenshot(folder_path)
 
@@ -84,9 +90,12 @@ def click_image(image_path, confidence=0.8, folder_path="../screen_temp", stop_e
         return False
 
 
-def smart_click_image(image_path, confidence=0.9, folder_path="../screen_temp", stop_event=None, max_retry=5):
+def smart_click_image(image_path, confidence=0.9, folder_path=None, stop_event=None, max_retry=5):
     if stop_event and stop_event.is_set():
         return False
+
+    if folder_path is None:
+        folder_path = resource_path("screen_temp")
 
     for attempt in range(max_retry):
         if stop_event and stop_event.is_set():
@@ -105,9 +114,12 @@ def smart_click_image(image_path, confidence=0.9, folder_path="../screen_temp", 
     return False
 
 
-def smart_scroll(folder_path="../screen_temp", stop_event=None):
+def smart_scroll(folder_path=None, stop_event=None):
     if stop_event and stop_event.is_set():
         return False
+
+    if folder_path is None:
+        folder_path = resource_path("screen_temp")
 
     capture_screenshot(folder_path)
 
@@ -129,9 +141,12 @@ def smart_scroll(folder_path="../screen_temp", stop_event=None):
         logging.info(f"❌ 错误：{str(e)}")
 
 
-def smart_scroll_learn(folder_path="../screen_temp", stop_event=None):
+def smart_scroll_learn(folder_path=None, stop_event=None):
     if stop_event and stop_event.is_set():
         return False
+
+    if folder_path is None:
+        folder_path = resource_path("screen_temp")
 
     capture_screenshot(folder_path)
 
@@ -153,14 +168,17 @@ def smart_scroll_learn(folder_path="../screen_temp", stop_event=None):
         logging.info(f"❌ 错误：{str(e)}")
 
 
-def smart_click_and_scroll_loop(art_name, max_iterations=5, folder_path="../screen_temp", stop_event=None):
+def smart_click_and_scroll_loop(art_name, max_iterations=5, folder_path=None, stop_event=None):
+    if folder_path is None:
+        folder_path = resource_path("screen_temp")
+
     for i in range(max_iterations):
         if stop_event and stop_event.is_set():
             return False
 
-        if smart_click_image(f"../assets/Martial arts/{art_name}.png", confidence=0.9, folder_path=folder_path,
-                             stop_event=stop_event):
-            if detect_image("../assets/main_if/find_pair.png", stop_event=stop_event):
+        image_path = resource_path("assets", "Martial arts", f"{art_name}.png")
+        if smart_click_image(image_path, confidence=0.9, folder_path=folder_path, stop_event=stop_event):
+            if detect_image(resource_path("assets", "main_if", "find_pair.png"), stop_event=stop_event):
                 return False
             return True
 
@@ -169,14 +187,17 @@ def smart_click_and_scroll_loop(art_name, max_iterations=5, folder_path="../scre
     return False
 
 
-def smart_click_and_scroll_loop_learn(art_name, max_iterations=5, folder_path="../screen_temp", stop_event=None):
+def smart_click_and_scroll_loop_learn(art_name, max_iterations=5, folder_path=None, stop_event=None):
+    if folder_path is None:
+        folder_path = resource_path("screen_temp")
+
     for i in range(max_iterations):
         if stop_event and stop_event.is_set():
             return False
 
-        if smart_click_image(f"../assets/Martial arts/{art_name}1.png", confidence=0.9, folder_path=folder_path,
-                             stop_event=stop_event):
-            if detect_image("../assets/main_if/find_pair.png", stop_event=stop_event):
+        image_path = resource_path("assets", "Martial arts", f"{art_name}1.png")
+        if smart_click_image(image_path, confidence=0.9, folder_path=folder_path, stop_event=stop_event):
+            if detect_image(resource_path("assets", "main_if", "find_pair.png"), stop_event=stop_event):
                 return False
             return True
 
