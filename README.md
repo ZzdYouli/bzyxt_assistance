@@ -8,7 +8,7 @@
 分辨率设置：平板模式分辨率1280*720
 模拟器设置：软件测试->其他->ADB调试->开启本地连接
 
-打开方式：解压后->bzyxt->暴走英雄坛躺床辅助器v0.3->暴走英雄坛躺床辅助器v0.3exe
+打开方式：解压后->bzyxt->暴走英雄坛躺床辅助器->暴走英雄坛躺床辅助器.exe
 
 使用演示：
 
@@ -20,6 +20,7 @@
 
 性能优化，添加大部分江湖武学：【暴走英雄坛躺床辅助器测试版v0.3】 https://www.bilibili.com/video/BV1hyTdzLE5P/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
+修复已知bug，添加卡两小时打桩：【暴走英雄坛躺床辅助器测试版v0.35】 https://www.bilibili.com/video/BV1YhMWzZEF5/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 更新说明：
 
 v0.2 添加刷奇遇功能。
