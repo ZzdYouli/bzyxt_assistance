@@ -29,7 +29,7 @@ def stump(folder_path, stop_event, update_ui, performance):
                 seconds = time_str_to_seconds(time_str)
                 update_ui(mode="stump", time=time_str)
 
-                if seconds > 7205:
+                if seconds > 100:
                     adb_click(40, 40, stop_event)
                     interruptible_sleep(0.8, stop_event)
                     adb_click(260, 770, stop_event)
