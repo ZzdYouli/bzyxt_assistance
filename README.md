@@ -22,6 +22,8 @@
 
 修复已知bug，添加卡两小时打桩：【暴走英雄坛躺床辅助器测试版v0.35】 https://www.bilibili.com/video/BV1YhMWzZEF5/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
 
+【暴走英雄坛躺床辅助器测试版使用演示】 https://www.bilibili.com/video/BV1Qk3qzBEze/?share_source=copy_web&vd_source=6c1411fcdf6ce3b96ccb4d701864670a
+
 更新说明：
 
 v0.2 添加刷奇遇功能。
