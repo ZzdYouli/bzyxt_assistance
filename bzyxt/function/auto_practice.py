@@ -8,6 +8,7 @@ from arts_to_practice.bhg.lqz import lqz
 from arts_to_practice.cxg.xd import xd
 from arts_to_practice.mj.hfh import hfh
 from arts_to_practice.xyd.tqgs import tqgs
+from arts_to_practice.tjs.qxdz import qxdz
 from basic_features.bed_to_post import bed_to_post
 from basic_features.pair import pair
 from basic_features.reset import reset
@@ -59,6 +60,8 @@ def practice(folder_path, speed, art_name, discount, stop_event, performance, up
                             tqgs(art, perf, stop_event)
                         elif path == "hfh":
                             hfh(art, perf, stop_event)
+                        elif path == "tjs":
+                            qxdz(art, perf, stop_event)
                         else:
                             raise ValueError(f"未知武学路径: {art} => {path}")
 

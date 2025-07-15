@@ -12,6 +12,9 @@ def arts_switch(art_name):
     elif art_name == "唐诗剑法":
         return "tangShi"
 
+    elif art_name == "太极剑":
+        return "taiJiJian"
+
     # 拳法
     elif art_name == "素心掌":
         return "suXin"
@@ -49,8 +52,8 @@ def arts_switch(art_name):
     elif art_name == "玄冥神掌":
         return "xuanMing"
 
-    elif art_name == "素心掌":
-        return "suXin"
+    elif art_name == "太极拳":
+        return "taiJiQuan"
 
     elif art_name == "纯阳指":
         return "chunYang"
@@ -87,6 +90,8 @@ def arts_switch(art_name):
     elif art_name == "狂风刀法":
         return "kuangFeng"
 
+    elif art_name == "玄虚刀法":
+        return "xuanXuDao"
     # 鞭法
     elif art_name == "女王鞭法":
         return "nvWang"
@@ -112,5 +117,11 @@ def arts_switch(art_name):
 
     elif art_name == "疾风步":
         return "jiFeng"
+
+    elif art_name == "腾云步":
+        return "tengYunBu"
+
+    elif art_name == "神行九变":
+        return "shenXing"
 
     return art_name

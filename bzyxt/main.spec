@@ -38,5 +38,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=['AdbWinApi.dll', 'AdbWinUsbApi.dll'],
-    name='暴走英雄坛躺床辅助器测试版v0.35'
+    name='../暴走英雄坛躺床辅助器测试版v0.35'
 )

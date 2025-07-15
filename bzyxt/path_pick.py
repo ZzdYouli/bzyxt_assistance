@@ -26,4 +26,16 @@ def path_pick(art_name):
     elif art_name == "xueYingBu":
         return "xd"
 
+    elif art_name == "tengYunBu":
+        return "tjs"
+
+    elif art_name == "xuanXuDao":
+        return "tjs"
+
+    elif art_name == "taiJiQuan":
+        return "tjs"
+
+    elif art_name == "taiJiJian":
+        return "tjs"
+
     return art_name
